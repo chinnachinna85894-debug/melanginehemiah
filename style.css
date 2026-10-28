@@ -414,7 +414,7 @@ img { max-width: 100%; }
   width: min(620px, 100%);
   margin-inline: auto;
   transform-style: preserve-3d;
-  transform: rotateX(var(--rx, 7deg)) rotateY(var(--ry, -12deg));
+  transform: rotateX(0deg) rotateY(0deg);
   transition: transform 0.15s ease-out;
 }
 .monitor {
@@ -1088,7 +1088,6 @@ img { max-width: 100%; }
   .desktop { height: 300px; }
   .dwin { left: 12px; top: 76px; }
   .desk-icons { flex-direction: row; right: 12px; top: 12px; left: 12px; }
-  .term3d { transform: rotateX(4deg) rotateY(0deg) !important; }
   .hud-a { left: -2%; }
   .hud-b { right: -2%; }
 }
