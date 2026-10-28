@@ -611,6 +611,82 @@ img { max-width: 100%; }
   pointer-events: none;
 }
 .toast.show { opacity: 1; transform: translateY(0); }
+
+/* --- Outlook 3D popup card --- */
+.o3d {
+  position: absolute;
+  right: 18px;
+  top: 64px;
+  z-index: 4;
+  width: 168px;
+  padding: 14px 14px 16px;
+  border-radius: 12px;
+  text-align: center;
+  background: linear-gradient(160deg, rgba(13, 20, 40, 0.96), rgba(7, 12, 24, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+  transform-style: preserve-3d;
+  transform: perspective(700px) rotateY(0deg) scale(0.9);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.55s cubic-bezier(0.2, 0.9, 0.25, 1.2), opacity 0.35s;
+}
+.o3d.pop {
+  opacity: 1;
+  transform: perspective(700px) rotateY(-10deg) rotateX(4deg) scale(1);
+  animation: o3sway 5s ease-in-out infinite alternate;
+}
+@keyframes o3sway {
+  from { transform: perspective(700px) rotateY(-14deg) rotateX(4deg) scale(1); }
+  to   { transform: perspective(700px) rotateY(10deg)  rotateX(-2deg) scale(1); }
+}
+.o3d.fixing {
+  border-color: rgba(251, 191, 36, 0.6);
+  box-shadow: 0 0 34px rgba(251, 191, 36, 0.25);
+  animation: none;
+  transform: perspective(700px) rotateY(0deg) scale(1.04);
+}
+.o3d.fixed {
+  border-color: rgba(74, 222, 128, 0.6);
+  box-shadow: 0 0 38px rgba(74, 222, 128, 0.3);
+  animation: none;
+  transform: perspective(700px) rotateY(0deg) rotateX(0deg) scale(1.08);
+}
+.o3d.hide {
+  opacity: 0;
+  transform: perspective(700px) rotateY(16deg) scale(0.9);
+}
+.o3-ico { font-size: 1.5rem; }
+.o3-title {
+  font-family: "Sora", sans-serif;
+  font-size: 0.76rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+.o3-status {
+  margin-top: 6px;
+  font-size: 0.62rem;
+  line-height: 1.4;
+  color: #f87171;
+  min-height: 2.6em;
+}
+.o3d.fixing .o3-status { color: #fbbf24; }
+.o3d.fixed .o3-status { color: #4ade80; }
+.o3-progress {
+  margin-top: 8px;
+  height: 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+.o3-progress span {
+  display: block;
+  width: 0%;
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #fbbf24, #22d3ee, #4ade80);
+  transition: width 2.4s ease;
+}
 .term-body {
   position: absolute;
   top: 34px;

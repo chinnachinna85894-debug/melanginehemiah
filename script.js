@@ -161,6 +161,8 @@ const session = [
   { cmd: "cleanmgr /sagerun:1", out: [["dim", "    Removing temporary files ..."], ["dim", "    2.4 GB of clutter cleared"]], ok: "Performance boost : DONE" },
   { cmd: "net stop spooler && net start spooler", out: [["dim", "    Print Spooler service restarted"]], ok: "Printer service : FIXED" },
   { cmd: "sfc /verifyonly", out: [["dim", "    Beginning system scan. This will take some time..."], ["dim", "    Windows Resource Protection did not find violations."]], ok: "System files : VERIFIED" },
+  { cmd: "outlook.exe /safe", out: [["warn", "    Starting Outlook in Safe Mode ..."], ["warn", "    Found: OST cache corrupted"]], ok: "Diagnosis : Outlook failing" },
+  { cmd: "fixost Outlook -repair -resetprofile", out: [["dim", "    Repairing OST cache ..."], ["dim", "    Re-creating mail profile ..."], ["dim", "    Synchronising inbox with Exchange ..."]], ok: "Outlook : REPAIRED ✔" },
   { cmd: "cls && echo Ticket #4821 - Resolved", out: [["info", "    User contacted · Issue closed · Notes saved to ticket"]], ok: "Ticket closed : SLA ON TIME ✔" }
 ];
 
@@ -263,10 +265,48 @@ setInterval(pulseMeters, 900);
 
 // ===== Toast popup every time a ticket closes =====
 const toast = document.getElementById("toast");
-function showToast() {
+function showToast(msg) {
+  toast.textContent = msg || "✔ Issue fixed · Ticket closed";
   toast.classList.add("show");
   setTimeout(() => toast.classList.remove("show"), 2600);
 }
+
+// ===== Outlook 3D popup — real cycle: fail → repair → fixed =====
+const o3d = document.getElementById("o3d");
+const o3Status = document.getElementById("o3Status");
+const o3Bar = document.getElementById("o3Bar");
+
+function outlookShow() {
+  o3d.classList.remove("fixing", "fixed");
+  o3Bar.style.width = "0%";
+  o3Status.textContent = "⚠ Disconnected — cannot reach server";
+  o3d.classList.add("pop");
+
+  setTimeout(() => {            // start repairing
+    o3d.classList.remove("pop");
+    o3d.classList.add("fixing");
+    o3Status.textContent = "🛠 Repairing OST cache…";
+    o3Bar.style.width = "72%";
+  }, 4200);
+
+  setTimeout(() => {            // fixed!
+    o3d.classList.remove("fixing");
+    o3d.classList.add("fixed");
+    o3Status.textContent = "✔ Connected — Inbox synced";
+    o3Bar.style.width = "100%";
+    showToast("✔ Outlook fixed · Profile repaired");
+  }, 8600);
+
+  setTimeout(() => {            // hide, then repeat
+    o3d.classList.remove("fixed");
+    o3d.classList.add("hide");
+    setTimeout(() => {
+      o3d.classList.remove("hide");
+      outlookShow();
+    }, 5200);
+  }, 14000);
+}
+setTimeout(outlookShow, 5000);
 
 // ===== Realtime clock cleanup on leave =====
 document.addEventListener("visibilitychange", () => {
