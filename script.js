@@ -239,16 +239,7 @@ const termObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.2 });
 termObserver.observe(termBody);
 
-// 3D mouse-follow on the monitor
-if (!isTouch) {
-  window.addEventListener("mousemove", (e) => {
-    if (!term3d) return;
-    const rx = (e.clientY / window.innerHeight - 0.5) * 6;
-    const ry = (e.clientX / window.innerWidth - 0.5) * 14;
-    term3d.style.setProperty("--rx", (7 - rx).toFixed(2) + "deg");
-    term3d.style.setProperty("--ry", (-12 + ry).toFixed(2) + "deg");
-  }, { passive: true });
-}
+// 3D tilt stays static — no mouse motion
 
 /* ============ FOOTER YEAR ============ */
 document.getElementById("year").textContent = new Date().getFullYear();
