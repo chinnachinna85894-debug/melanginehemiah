@@ -1,13 +1,3 @@
-/* ============ LOADER ============ */
-document.body.classList.add("loading");
-window.addEventListener("load", () => {
-  const loader = document.getElementById("loader");
-  setTimeout(() => {
-    loader.classList.add("done");
-    document.body.classList.remove("loading");
-  }, 900);
-});
-
 /* ============ SCROLL PROGRESS ============ */
 const progress = document.getElementById("progress");
 
