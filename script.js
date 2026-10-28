@@ -217,7 +217,6 @@ function termType() {
     tPhase = 0; tChar = 0;
     setTimeout(termType, 1300);
   }
-  }
 }
 
 function trim() {
