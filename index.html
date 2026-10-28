@@ -93,11 +93,42 @@
             <div class="bezel">
               <div class="screen">
                 <div class="scanlines"></div>
-                <div class="term-bar">
-                  <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-                  <em>PC-Doctor.exe — Live Diagnostics</em>
+                <!-- Mini desktop -->
+                <div class="desktop">
+                  <div class="desk-icons">
+                    <div class="dicon"><span>🖥️</span><em>This PC</em></div>
+                    <div class="dicon active"><span>🧰</span><em>Diagnostics</em></div>
+                    <div class="dicon"><span>🛡️</span><em>Security</em></div>
+                  </div>
+
+                  <!-- App window with live terminal -->
+                  <div class="dwin">
+                    <div class="dwin-bar">
+                      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+                      <em>PC-Doctor.exe — Live Diagnostics</em>
+                    </div>
+                    <div class="term-body" id="termBody"></div>
+                  </div>
+
+                  <!-- Taskbar -->
+                  <div class="taskbar">
+                    <span class="tstart">⊞</span>
+                    <span class="ticon">🧰</span>
+                    <span class="ticon">🌐</span>
+                    <span class="ticon">🛡️</span>
+                    <div class="tmeters">
+                      <div class="tmeter"><i>CPU</i><b><span id="cpuBar"></span></b></div>
+                      <div class="tmeter"><i>RAM</i><b><span id="ramBar"></span></b></div>
+                    </div>
+                    <div class="tstatus">
+                      <span class="tnet">🟢</span>
+                      <span id="liveClock">00:00</span>
+                    </div>
+                  </div>
+
+                  <!-- Toast notification -->
+                  <div class="toast" id="toast">✔ Issue fixed · Ticket closed</div>
                 </div>
-                <div class="term-body" id="termBody"></div>
               </div>
             </div>
             <div class="stand"></div>

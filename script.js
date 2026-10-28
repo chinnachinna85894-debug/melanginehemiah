@@ -218,6 +218,7 @@ function termType() {
     if (caretEl) { caretEl = null; }
     tLine = (tLine + 1) % session.length;
     tPhase = 0; tChar = 0;
+    showToast();
     setTimeout(termType, 1300);
   }
 }
@@ -240,6 +241,37 @@ const termObserver = new IntersectionObserver((entries) => {
 termObserver.observe(termBody);
 
 // 3D tilt stays static — no mouse motion
+
+// ===== Realtime clock =====
+const clockEl = document.getElementById("liveClock");
+function tickClock() {
+  const d = new Date();
+  clockEl.textContent = `${d.getHours()}:${String(d.getMinutes()).padStart(2, "0")}:${String(d.getSeconds()).padStart(2, "0")}`;
+}
+tickClock();
+setInterval(tickClock, 1000);
+
+// ===== CPU / RAM live meters =====
+const cpuBar = document.getElementById("cpuBar");
+const ramBar = document.getElementById("ramBar");
+function pulseMeters() {
+  cpuBar.style.width = (18 + Math.random() * 55).toFixed(0) + "%";
+  ramBar.style.width = (38 + Math.random() * 32).toFixed(0) + "%";
+}
+pulseMeters();
+setInterval(pulseMeters, 900);
+
+// ===== Toast popup every time a ticket closes =====
+const toast = document.getElementById("toast");
+function showToast() {
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2600);
+}
+
+// ===== Realtime clock cleanup on leave =====
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) tickClock;
+});
 
 /* ============ FOOTER YEAR ============ */
 document.getElementById("year").textContent = new Date().getFullYear();

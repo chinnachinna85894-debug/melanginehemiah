@@ -434,7 +434,6 @@ img { max-width: 100%; }
 }
 .screen {
   position: relative;
-  background: #050a14;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: inset 0 0 60px rgba(34, 211, 238, 0.08);
@@ -442,36 +441,186 @@ img { max-width: 100%; }
 .scanlines {
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 3px);
+  background: repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 3px);
   pointer-events: none;
-  z-index: 3;
+  z-index: 6;
 }
-.term-bar {
+
+/* --- mini Windows-style desktop --- */
+.desktop {
+  position: relative;
+  height: 380px;
+  background:
+    radial-gradient(420px circle at 75% 15%, rgba(37, 99, 235, 0.45), transparent 60%),
+    radial-gradient(380px circle at 15% 90%, rgba(14, 165, 233, 0.35), transparent 60%),
+    linear-gradient(160deg, #0a1230, #071022);
+  overflow: hidden;
+}
+.desk-icons {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.dicon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 62px;
+  padding: 6px 4px;
+  border-radius: 8px;
+  font-size: 1.15rem;
+  border: 1px solid transparent;
+  transition: background 0.2s;
+}
+.dicon:hover { background: rgba(255, 255, 255, 0.08); }
+.dicon.active {
+  background: rgba(108, 140, 255, 0.18);
+  border-color: rgba(108, 140, 255, 0.4);
+}
+.dicon em {
+  font-style: normal;
+  font-size: 0.58rem;
+  color: #dfe8ff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* App window */
+.dwin {
+  position: absolute;
+  top: 18px;
+  left: 92px;
+  right: 16px;
+  bottom: 46px;
+  z-index: 2;
+  background: rgba(7, 12, 24, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: winIn 0.5s ease;
+}
+@keyframes winIn { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
+.dwin-bar {
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 9px 14px;
-  background: rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid var(--border);
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
-.term-bar .dot { width: 10px; height: 10px; border-radius: 50%; }
-.dot.red { background: #ff5f57; }
-.dot.yellow { background: #febc2e; }
-.dot.green { background: #28c840; }
-.term-bar em {
-  margin-left: auto;
+.dwin-bar .dot { width: 9px; height: 9px; border-radius: 50%; }
+.dwin-bar em {
+  margin-left: 6px;
   font-style: normal;
   font-family: ui-monospace, Consolas, monospace;
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   color: var(--muted);
   letter-spacing: 1px;
 }
+
+/* Taskbar */
+.taskbar {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 38px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  background: rgba(7, 11, 22, 0.85);
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(10px);
+}
+.tstart {
+  display: grid;
+  place-items: center;
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  background: linear-gradient(135deg, #2563eb, #22d3ee);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.ticon { font-size: 0.85rem; opacity: 0.75; }
+.tmeters {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+}
+.tmeter {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: ui-monospace, Consolas, monospace;
+}
+.tmeter i {
+  font-style: normal;
+  font-size: 0.6rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+.tmeter b {
+  position: relative;
+  width: 46px;
+  height: 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+.tmeter b span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 30%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #22d3ee, #4ade80);
+  transition: width 0.7s ease;
+}
+.tstatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.72rem;
+  color: #cdd9f2;
+}
+.tnet { font-size: 0.6rem; }
+
+/* Toast notification */
+.toast {
+  position: absolute;
+  right: 14px;
+  bottom: 52px;
+  z-index: 4;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: rgba(8, 20, 16, 0.92);
+  border: 1px solid rgba(74, 222, 128, 0.5);
+  color: #4ade80;
+  font-size: 0.74rem;
+  font-weight: 600;
+  box-shadow: 0 0 30px rgba(74, 222, 128, 0.25);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s, transform 0.4s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
 .term-body {
-  height: 250px;
-  padding: 16px 18px;
+  position: absolute;
+  top: 34px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 12px 16px;
   overflow: hidden;
   font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   line-height: 1.65;
   text-align: left;
 }
@@ -936,7 +1085,9 @@ img { max-width: 100%; }
 }
 
 @media (max-width: 900px) {
-  .term-body { height: 240px; font-size: 0.74rem; }
+  .desktop { height: 300px; }
+  .dwin { left: 12px; top: 76px; }
+  .desk-icons { flex-direction: row; right: 12px; top: 12px; left: 12px; }
   .term3d { transform: rotateX(4deg) rotateY(0deg) !important; }
   .hud-a { left: -2%; }
   .hud-b { right: -2%; }
