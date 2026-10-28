@@ -183,9 +183,13 @@ function termType() {
     }
     const text = `C:\\PC-Doctor> ${step.cmd}`;
     tChar++;
-    caretEl.textContent = text.slice(0, tChar);
-    caretEl.classList.remove("tl-caret");
-    caretEl.classList.add("tl-caret");
+    const shown = text.slice(0, tChar);
+    if (tChar < text.length) {
+      caretEl.textContent = shown;
+    } else {
+      caretEl.textContent = shown;
+      caretEl.classList.remove("tl-caret");
+    }
     if (tChar >= text.length) {
       caretEl.classList.remove("tl-caret");
       caretEl = null;
@@ -211,16 +215,10 @@ function termType() {
     el.textContent = `✔ ${step.ok}`;
     termBody.appendChild(el);
     trim();
+    if (caretEl) { caretEl = null; }
     tLine = (tLine + 1) % session.length;
     tPhase = 0; tChar = 0;
-    setTimeout(termType, 1100);
-    if (caretEl) { caretEl = null; }
-    // fresh prompt marker
-    const p = document.createElement("div");
-    p.className = "tl dim";
-    p.textContent = "────────────";
-    termBody.appendChild(p);
-    trim();
+    setTimeout(termType, 1300);
   }
 }
 
@@ -245,10 +243,10 @@ termObserver.observe(termBody);
 if (!isTouch) {
   window.addEventListener("mousemove", (e) => {
     if (!term3d) return;
-    const rx = (e.clientY / window.innerHeight - 0.5) * 10;
-    const ry = (e.clientX / window.innerWidth - 0.5) * 22;
-    term3d.style.setProperty("--rx", (10 - rx).toFixed(2) + "deg");
-    term3d.style.setProperty("--ry", (-16 + ry).toFixed(2) + "deg");
+    const rx = (e.clientY / window.innerHeight - 0.5) * 6;
+    const ry = (e.clientX / window.innerWidth - 0.5) * 14;
+    term3d.style.setProperty("--rx", (7 - rx).toFixed(2) + "deg");
+    term3d.style.setProperty("--ry", (-12 + ry).toFixed(2) + "deg");
   }, { passive: true });
 }
 
