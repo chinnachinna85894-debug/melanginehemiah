@@ -161,7 +161,10 @@ const session = [
   { cmd: "cleanmgr /sagerun:1", out: [["dim", "    Removing temporary files ..."], ["dim", "    2.4 GB of clutter cleared"]], ok: "Performance boost : DONE" },
   { cmd: "net stop spooler && net start spooler", out: [["dim", "    Print Spooler service restarted"]], ok: "Printer service : FIXED" },
   { cmd: "sfc /verifyonly", out: [["dim", "    Beginning system scan. This will take some time..."], ["dim", "    Windows Resource Protection did not find violations."]], ok: "System files : VERIFIED" },
-  { cmd: "outlook.exe /safe", out: [["warn", "    Starting Outlook in Safe Mode ..."], ["warn", "    Found: OST cache corrupted"]], ok: "Diagnosis : Outlook failing" },
+  { cmd: "outlook.exe /safe", out: [["warn", "    Outlook started in Safe Mode ..."], ["warn", "    Error 0xCAA20002: sign-in request timed out"]], ok: "Login issue detected" },
+  { cmd: "cmdkey /list | findstr Outlook", out: [["dim", "    Target: Office15:OUTLOOK — credentials STALE"]], ok: "Stale credentials found" },
+  { cmd: "cmdkey /delete:Office15:OUTLOOK", out: [["dim", "    Stale credentials deleted"]], ok: "Credentials cleared ✔" },
+  { cmd: "dsregcmd /refreshcreds", out: [["dim", "    Azure AD token refreshed"], ["dim", "    Re-authenticating with Exchange ..."]], ok: "Outlook login: FIXED ✔" },
   { cmd: "fixost Outlook -repair -resetprofile", out: [["dim", "    Repairing OST cache ..."], ["dim", "    Re-creating mail profile ..."], ["dim", "    Synchronising inbox with Exchange ..."]], ok: "Outlook : REPAIRED ✔" },
   { cmd: "cls && echo Ticket #4821 - Resolved", out: [["info", "    User contacted · Issue closed · Notes saved to ticket"]], ok: "Ticket closed : SLA ON TIME ✔" }
 ];
@@ -218,10 +221,12 @@ function termType() {
     termBody.appendChild(el);
     trim();
     if (caretEl) { caretEl = null; }
+// ===== Contextual toast for every terminal fix =====
+    showToast(`✔ ${step.ok}`);
     tLine = (tLine + 1) % session.length;
     tPhase = 0; tChar = 0;
-    showToast();
     setTimeout(termType, 1300);
+  }
   }
 }
 
@@ -271,40 +276,57 @@ function showToast(msg) {
   setTimeout(() => toast.classList.remove("show"), 2600);
 }
 
-// ===== Outlook 3D popup — real cycle: fail → repair → fixed =====
+// ===== Outlook 3D popup — two real stories: connection issue + login issue =====
 const o3d = document.getElementById("o3d");
 const o3Status = document.getElementById("o3Status");
 const o3Bar = document.getElementById("o3Bar");
 
+const oaStories = [
+  // Story 1: connectivity
+  [
+    { cls: "",        note: "⚠ Disconnected — cannot reach server", bar: "0%" },
+    { cls: "fixing",  note: "🛠 Repairing OST cache…",               bar: "72%" },
+    { cls: "fixed",   note: "✔ Connected — Inbox synced",            bar: "100%", toast: "✔ Outlook fixed · Profile repaired" }
+  ],
+  // Story 2: login failure
+  [
+    { cls: "",        note: "❌ Sign-in failed — invalid credentials", bar: "0%" },
+    { cls: "fixing",  note: "🛠 Clearing stale credentials…",         bar: "60%" },
+    { cls: "fixing",  note: "🔄 Refreshing Azure AD token…",          bar: "90%" },
+    { cls: "fixed",   note: "✔ Signed in — Welcome back!",            bar: "100%", toast: "✔ Outlook login fixed ✔" }
+  ]
+];
+let oaRun = 0;
+
 function outlookShow() {
-  o3d.classList.remove("fixing", "fixed");
+  const story = oaStories[oaRun % oaStories.length];
+  oaRun++;
+
+  // reset card
+  o3d.classList.remove("fixing", "fixed", "hide");
   o3Bar.style.width = "0%";
-  o3Status.textContent = "⚠ Disconnected — cannot reach server";
+  o3Status.textContent = story[0].note;
   o3d.classList.add("pop");
 
-  setTimeout(() => {            // start repairing
-    o3d.classList.remove("pop");
-    o3d.classList.add("fixing");
-    o3Status.textContent = "🛠 Repairing OST cache…";
-    o3Bar.style.width = "72%";
-  }, 4200);
+  let delay = 4200;
+  for (let i = 1; i < story.length; i++) {
+    const s = story[i];
+    setTimeout(() => {
+      o3d.classList.remove("pop", "fixing", "fixed");
+      o3d.classList.add(s.cls);
+      o3Status.textContent = s.note;
+      o3Bar.style.width = s.bar;
+      if (s.toast) showToast(s.toast);
+    }, delay);
+    delay += i === story.length - 1 ? 5200 : 3800;
+  }
 
-  setTimeout(() => {            // fixed!
-    o3d.classList.remove("fixing");
-    o3d.classList.add("fixed");
-    o3Status.textContent = "✔ Connected — Inbox synced";
-    o3Bar.style.width = "100%";
-    showToast("✔ Outlook fixed · Profile repaired");
-  }, 8600);
-
-  setTimeout(() => {            // hide, then repeat
+  // hide after story ends, then replay with the other story
+  setTimeout(() => {
     o3d.classList.remove("fixed");
     o3d.classList.add("hide");
-    setTimeout(() => {
-      o3d.classList.remove("hide");
-      outlookShow();
-    }, 5200);
-  }, 14000);
+    setTimeout(outlookShow, 5600);
+  }, delay);
 }
 setTimeout(outlookShow, 5000);
 
