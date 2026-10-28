@@ -404,6 +404,136 @@ img { max-width: 100%; }
   100% { opacity: 0; top: 8px; }
 }
 
+/* ============ 3D TROUBLESHOOTING STATION ============ */
+.term-stage {
+  perspective: 1300px;
+  margin-top: 70px;
+}
+.term3d {
+  position: relative;
+  width: min(720px, 100%);
+  margin-inline: auto;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx, 10deg)) rotateY(var(--ry, -16deg));
+  transition: transform 0.15s ease-out;
+}
+.monitor {
+  position: relative;
+  transform-style: preserve-3d;
+}
+.bezel {
+  border-radius: 18px;
+  padding: 14px;
+  background: linear-gradient(145deg, #232c47, #10182b);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    30px 50px 80px rgba(0, 0, 0, 0.65),
+    -10px -20px 60px rgba(108, 140, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transform: translateZ(0);
+}
+.screen {
+  position: relative;
+  background: #050a14;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: inset 0 0 60px rgba(34, 211, 238, 0.08);
+}
+.scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 3px);
+  pointer-events: none;
+  z-index: 3;
+}
+.term-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border);
+}
+.term-bar .dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot.red { background: #ff5f57; }
+.dot.yellow { background: #febc2e; }
+.dot.green { background: #28c840; }
+.term-bar em {
+  margin-left: auto;
+  font-style: normal;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+.term-body {
+  height: 300px;
+  padding: 16px 18px;
+  overflow: hidden;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.83rem;
+  line-height: 1.7;
+  text-align: left;
+}
+.tl { white-space: pre-wrap; opacity: 0; animation: lineIn 0.25s ease forwards; }
+.tl.cmd { color: #dfe8ff; }
+.tl.ok { color: #4ade80; }
+.tl.info { color: #7fb0ff; }
+.tl.warn { color: #fbbf24; }
+.tl.dim { color: #64748b; }
+@keyframes lineIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.tl-caret::after {
+  content: "█";
+  color: var(--accent-2);
+  animation: blink 0.8s steps(1) infinite;
+}
+
+.stand {
+  width: 54px;
+  height: 58px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #1a2338, #101828);
+  transform: translateZ(-24px) rotateX(40deg);
+  transform-origin: top center;
+  clip-path: polygon(38% 0, 62% 0, 78% 100%, 22% 100%);
+}
+.base {
+  width: 240px;
+  height: 16px;
+  margin: -8px auto 0;
+  border-radius: 0 0 14px 14px;
+  background: linear-gradient(180deg, #232c47, #0c1424);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transform: translateZ(-30px);
+}
+.base-glow {
+  width: 260px;
+  height: 26px;
+  margin: -6px auto 0;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(34, 211, 238, 0.35), transparent 70%);
+  filter: blur(8px);
+}
+
+.hud {
+  position: absolute;
+  z-index: 4;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: rgba(5, 10, 20, 0.75);
+  border: 1px solid rgba(74, 222, 128, 0.4);
+  color: #4ade80;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 24px rgba(74, 222, 128, 0.15);
+  animation: float 5.5s ease-in-out infinite;
+}
+.hud-a { top: -14px; left: -6%; }
+.hud-b { top: 34%; right: -7%; animation-delay: 0.9s; }
+.hud-c { bottom: -12px; left: 12%; animation-delay: 1.7s; }
+
 /* ============ TICKER ============ */
 .ticker {
   position: relative;
@@ -803,6 +933,13 @@ img { max-width: 100%; }
   .contact-cards { grid-template-columns: 1fr; }
   .section { padding: 72px 0; }
   .about-card { padding: 26px 22px; }
+}
+
+@media (max-width: 900px) {
+  .term-body { height: 240px; font-size: 0.74rem; }
+  .term3d { transform: rotateX(4deg) rotateY(0deg) !important; }
+  .hud-a { left: -2%; }
+  .hud-b { right: -2%; }
 }
 
 @media (max-width: 520px) {
