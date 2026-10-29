@@ -53,7 +53,7 @@ window.addEventListener("scroll", () => {
 }, { passive: true });
 
 /* ============ TYPING EFFECT ============ */
-const roles = ["IT Helpdesk Support", "Service Desk Analyst", "Desktop Support Engineer", "Hardware Troubleshooter"];
+const roles = ["Java Full Stack Developer", "Backend Developer · Spring Boot", "Frontend Developer · React", "REST API & MySQL Dev"];
 const typedEl = document.getElementById("typed");
 
 let roleIndex = 0;
@@ -143,20 +143,19 @@ document.querySelectorAll(".stat-num").forEach((el) => statObserver.observe(el))
 const termBody = document.getElementById("termBody");
 const term3d = document.getElementById("term3d");
 
-// Real desktop-support session: command -> outputs, loops forever
+// Real full-stack dev session: command -> outputs, loops forever
 const session = [
-  { cmd: "ipconfig /all", out: [["dim", "    IPv4 Address . . . : 192.168.1.24"], ["info", "    Adapter status . . : Connected"]], ok: "Network adapter : OK" },
-  { cmd: "ping 8.8.8.8 -n 4", out: [["dim", "    Reply from 8.8.8.8: time=12ms"], ["dim", "    Reply from 8.8.8.8: time=11ms"]], ok: "Internet latency : PASS" },
-  { cmd: "chkdsk C: /f", out: [["dim", "    Stage 1: Examining basic file system ..."], ["dim", "    No errors found on drive C:"]], ok: "Disk health : OK" },
-  { cmd: "cleanmgr /sagerun:1", out: [["dim", "    Removing temporary files ..."], ["dim", "    2.4 GB of clutter cleared"]], ok: "Performance boost : DONE" },
-  { cmd: "net stop spooler && net start spooler", out: [["dim", "    Print Spooler service restarted"]], ok: "Printer service : FIXED" },
-  { cmd: "sfc /verifyonly", out: [["dim", "    Beginning system scan. This will take some time..."], ["dim", "    Windows Resource Protection did not find violations."]], ok: "System files : VERIFIED" },
-  { cmd: "outlook.exe /safe", out: [["warn", "    Outlook started in Safe Mode ..."], ["warn", "    Error 0xCAA20002: sign-in request timed out"]], ok: "Login issue detected" },
-  { cmd: "cmdkey /list | findstr Outlook", out: [["dim", "    Target: Office15:OUTLOOK — credentials STALE"]], ok: "Stale credentials found" },
-  { cmd: "cmdkey /delete:Office15:OUTLOOK", out: [["dim", "    Stale credentials deleted"]], ok: "Credentials cleared ✔" },
-  { cmd: "dsregcmd /refreshcreds", out: [["dim", "    Azure AD token refreshed"], ["dim", "    Re-authenticating with Exchange ..."]], ok: "Outlook login: FIXED ✔" },
-  { cmd: "fixost Outlook -repair -resetprofile", out: [["dim", "    Repairing OST cache ..."], ["dim", "    Re-creating mail profile ..."], ["dim", "    Synchronising inbox with Exchange ..."]], ok: "Outlook : REPAIRED ✔" },
-  { cmd: "cls && echo Ticket #4821 - Resolved", out: [["info", "    User contacted · Issue closed · Notes saved to ticket"]], ok: "Ticket closed : SLA ON TIME ✔" }
+  { cmd: "git status", out: [["dim", "    On branch feature/spring-boot-api"], ["dim", "    nothing to commit, working tree clean"]], ok: "Version control : CLEAN" },
+  { cmd: "mvn clean install", out: [["dim", "    [INFO] Compiling 24 source files ..."], ["dim", "    [INFO] BUILD SUCCESS"]], ok: "Maven build : SUCCESS ✔" },
+  { cmd: "mvn spring-boot:run", out: [["dim", "    Started Application in 3.8 seconds"], ["dim", "    Tomcat started on port 8080"]], ok: "Spring Boot server : RUNNING" },
+  { cmd: "curl -X POST /api/students", out: [["dim", "    HTTP/1.1 201 Created"], ["dim", '    {"id": 42, "name": "Rahul", "dept": "CSE"}']], ok: "POST /api/students : 201 ✔" },
+  { cmd: "curl -X GET /api/students/42", out: [["dim", "    HTTP/1.1 200 OK"], ["dim", '    {"id": 42, "name": "Rahul", "dept": "CSE"}']], ok: "GET endpoint : PASS" },
+  { cmd: "mvn test", out: [["warn", "    Tests run: 18, Failures: 1"], ["warn", "    NullPointerException in /api/students"]], ok: "Bug detected : DEBUGGING" },
+  { cmd: "git commit -m \"fix: null check in service\"", out: [["dim", "    [feature/spring-boot-api] 1 file changed"], ["dim", "    NullPointerException handled gracefully"]], ok: "Fix committed : 1 file ✔" },
+  { cmd: "mvn test", out: [["dim", "    Tests run: 18, Failures: 0, Errors: 0"], ["info", "    All unit tests passing"]], ok: "TESTS : 18/18 PASSING ✔" },
+  { cmd: "npm start  # React frontend", out: [["dim", "    Compiled successfully!"], ["dim", "    Local: http://localhost:3000"]], ok: "React UI : LIVE" },
+  { cmd: "docker build -t student-app .", out: [["dim", "    Successfully built image student-app:latest"], ["dim", "    Container running in under 60s"]], ok: "Deployment : DONE ✔" },
+  { cmd: "clear && echo Feature shipped!", out: [["info", "    API + UI + DB · End-to-end verified"]], ok: "Feature shipped : FULL STACK ✔" }
 ];
 
 let tLine = 0;      // session step
@@ -176,7 +175,7 @@ function termType() {
       termBody.appendChild(caretEl);
       trim();
     }
-    const text = `C:\\PC-Doctor> ${step.cmd}`;
+    const text = `C:\\dev> ${step.cmd}`;
     tChar++;
     const shown = text.slice(0, tChar);
     if (tChar < text.length) {
@@ -260,29 +259,29 @@ setInterval(pulseMeters, 900);
 // ===== Toast popup every time a ticket closes =====
 const toast = document.getElementById("toast");
 function showToast(msg) {
-  toast.textContent = msg || "✔ Issue fixed · Ticket closed";
+  toast.textContent = msg || "✔ Build passed · App deployed";
   toast.classList.add("show");
   setTimeout(() => toast.classList.remove("show"), 2600);
 }
 
-// ===== Outlook 3D popup — two real stories: connection issue + login issue =====
+// ===== Spring Boot 3D popup — two real stories: build failure + startup =====
 const o3d = document.getElementById("o3d");
 const o3Status = document.getElementById("o3Status");
 const o3Bar = document.getElementById("o3Bar");
 
 const oaStories = [
-  // Story 1: connectivity
+  // Story 1: build fix
   [
-    { cls: "",        note: "⚠ Disconnected — cannot reach server", bar: "0%" },
-    { cls: "fixing",  note: "🛠 Repairing OST cache…",               bar: "72%" },
-    { cls: "fixed",   note: "✔ Connected — Inbox synced",            bar: "100%", toast: "✔ Outlook fixed · Profile repaired" }
+    { cls: "",       note: "⚠ Build failed — compilation error", bar: "0%" },
+    { cls: "fixing", note: "🛠 Fixing code & recompiling…",       bar: "72%" },
+    { cls: "fixed",  note: "✔ Build success — App packaged",      bar: "100%", toast: "✔ Build fixed · Maven SUCCESS" }
   ],
-  // Story 2: login failure
+  // Story 2: server startup
   [
-    { cls: "",        note: "❌ Sign-in failed — invalid credentials", bar: "0%" },
-    { cls: "fixing",  note: "🛠 Clearing stale credentials…",         bar: "60%" },
-    { cls: "fixing",  note: "🔄 Refreshing Azure AD token…",          bar: "90%" },
-    { cls: "fixed",   note: "✔ Signed in — Welcome back!",            bar: "100%", toast: "✔ Outlook login fixed ✔" }
+    { cls: "",       note: "❌ Port 8080 already in use",         bar: "0%" },
+    { cls: "fixing", note: "🛠 Releasing port & restarting…",     bar: "60%" },
+    { cls: "fixing", note: "🔄 Loading Spring context…",         bar: "90%" },
+    { cls: "fixed",  note: "✔ App running — http://localhost:8080", bar: "100%", toast: "✔ Spring Boot deployed ✔" }
   ]
 ];
 let oaRun = 0;
